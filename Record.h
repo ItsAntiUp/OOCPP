@@ -1,18 +1,14 @@
 #ifndef RECORD_H
 #define RECORD_H
 
-#include <iostream>
 #include <string>
-#include <cctype>
-#include <chrono>
-#include <iomanip>
 
 #define DEFAULT_YEAR 1900
 #define DEFAULT_NAME "Not Found"
 #define DEFAULT_RATING 0.0
 #define DEFAULT_ISFAVORITE false
 
-namespace rec{
+namespace Rec{
     class Record
     {
         private:
@@ -38,8 +34,9 @@ namespace rec{
             void setIsFavorite(bool);
 
             //Getters
-            std::string getSong() const;
+            int getId() const;
             std::string getArtist() const;
+            std::string getSong() const;
             unsigned getYear() const;
             double getRating() const;
             bool getIsFavorite() const;
@@ -48,6 +45,8 @@ namespace rec{
             std::string toString() const;
 
         private:
+            void init(const std::string&, const std::string&, unsigned, double, bool);
+
             bool isNameCorrect(const std::string&);
             bool isYearCorrect(unsigned);
             bool isRatingCorrect(double);

@@ -1,6 +1,8 @@
 #include "Record.h"
 
-using namespace rec;
+#include <iostream>
+
+using namespace Rec;
 
 int main(){
     try{
@@ -34,7 +36,10 @@ int main(){
         delete []r3;
     }
     catch(std::exception &e){
-        std::cout << e.what() << "\n";
+        std::cerr << e.what() << "\n";
+    }
+    catch(...){
+        std::cerr << "Unexpected error occurred." << "\n";
     }
 
     return 0;
