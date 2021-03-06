@@ -1,45 +1,27 @@
 #include "Record.h"
+#include "Utility.h"
 
 #include <iostream>
 
-using namespace Rec;
-
 int main(){
     try{
-        Record r1;
-        std::cout << r1.toString() << "\n";
+        Rec::Record r1("Artist1", "Song1", 2021, 7.7, false);
+        Rec::Record r2("Artist2", "Song2", 2018, 4.3, false);
+        Rec::Record r3("Artist3", "Song3", 2017, 7.8, true);
 
-        r1.setArtist("Artist");
-        r1.setSong("Song");
-        r1.setYear(2021);
-        r1.setRating(6.4);
-        r1.setIsFavorite(false);
+        std::cout << (r1++ > r3) << "\n";
+        std::cout << (r1 > r3) << "\n";
+        std::cout << (--r1 > r3) << "\n";
 
-        std::cout << r1.toString() << "\n";
-
-        Record r2("First", "Second", 2015, 8.5, false);
-        std::cout << r2.toString() << "\n";
-
-        Record *r3 = new Record[3];
-        r3[0].setArtist("Dynamic Artist");
-        r3[0].setSong("Dynamic Song");
-        r3[0].setYear(-100); //Throws exception
-
-        r3[2].setYear(2021);
-        r3[2].setRating(10);
-        r3[2].setIsFavorite(true);
-
-        std::cout << r3[0].toString() << "\n";
-        std::cout << r3[1].toString() << "\n";
-        std::cout << r3[2].toString() << "\n";
-
-        delete []r3;
+        std::cout << r1 << "\n";
+        std::cout << r2 << "\n";
+        std::cout << r3 << "\n";
     }
     catch(std::exception &e){
         std::cerr << e.what() << "\n";
     }
     catch(...){
-        std::cerr << "Unexpected error occurred." << "\n";
+        std::cerr << UNEXPEXTED_EXCEPTION << "\n";
     }
 
     return 0;

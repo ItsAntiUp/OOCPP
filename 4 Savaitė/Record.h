@@ -1,20 +1,14 @@
 #ifndef RECORD_H
 #define RECORD_H
 
+#include <iostream>
 #include <string>
 
-#define DEFAULT_YEAR 1900
-#define DEFAULT_NAME "Not Found"
-#define DEFAULT_RATING 0.0
-#define DEFAULT_ISFAVORITE false
-
 namespace Rec{
-    class Record
-    {
+    class Record{
         private:
             const unsigned id;
             static unsigned idCounter;
-
             std::string artist;
             std::string song;
             unsigned year;
@@ -24,16 +18,14 @@ namespace Rec{
         public:
             Record();
             Record(const std::string&, const std::string&, unsigned, double, bool);
-            virtual ~Record();
+            ~Record();
 
-            //Setters
             void setArtist(const std::string&);
             void setSong(const std::string&);
             void setYear(unsigned);
             void setRating(double);
             void setIsFavorite(bool);
 
-            //Getters
             int getId() const;
             std::string getArtist() const;
             std::string getSong() const;
@@ -41,7 +33,21 @@ namespace Rec{
             double getRating() const;
             bool getIsFavorite() const;
 
-            //Other methods
+            bool operator ==(const Record&);
+            bool operator !=(const Record&);
+            bool operator  >(const Record&);
+            bool operator  <(const Record&);
+            bool operator >=(const Record&);
+            bool operator <=(const Record&);
+
+            Record operator ++();
+            Record operator ++(int);
+            Record operator --();
+            Record operator --(int);
+
+            friend std::istream& operator >>(std::istream&, Record&);
+            friend std::ostream& operator <<(std::ostream&, const Record&);
+
             std::string toString() const;
 
         private:
@@ -50,7 +56,6 @@ namespace Rec{
             bool isNameCorrect(const std::string&);
             bool isYearCorrect(unsigned);
             bool isRatingCorrect(double);
-            unsigned getCurrentYear();
     };
 }
 
