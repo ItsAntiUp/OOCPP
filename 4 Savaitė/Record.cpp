@@ -103,7 +103,7 @@ namespace Rec{
         return *this;
     }
 
-    Record Record::operator ++(const int){
+    Record Record::operator ++(int){
         Record temp = *this;
         float temp_rating = this->getRating();
         this->setRating(++temp_rating);
@@ -116,7 +116,7 @@ namespace Rec{
         return *this;
     }
 
-    Record Record::operator --(const int){
+    Record Record::operator --(int){
         Record temp = *this;
         float temp_rating = this->getRating();
         this->setRating(--temp_rating);
