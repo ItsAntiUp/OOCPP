@@ -21,7 +21,7 @@ int main(){
         std::cerr << e.what() << "\n";
     }
     catch(...){
-        std::cerr << UNEXPEXTED_EXCEPTION << "\n";
+        std::cerr << Util::Exceptions::UNEXPECTED_EXCEPTION << "\n";
     }
 
     return 0;

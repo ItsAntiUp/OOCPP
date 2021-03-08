@@ -5,19 +5,59 @@
 #include <string>
 #include <iomanip>
 
+using namespace Util::Defaults;
+using namespace Util::Exceptions;
+
 namespace Rec{
     unsigned Record::idCounter = 0;
 
-    Record::Record() : id(++idCounter){
-        init(DEFAULT_NAME, DEFAULT_NAME, DEFAULT_YEAR, DEFAULT_RATING, DEFAULT_ISFAVORITE);
+    Record::Record(){
+        init(++idCounter, DEFAULT_NAME, DEFAULT_NAME, DEFAULT_YEAR, DEFAULT_RATING, DEFAULT_ISFAVORITE);
     }
 
-    Record::Record(const std::string &i_artist, const std::string &i_song, unsigned i_year, double i_rating, bool i_isFavorite) : id(++idCounter){
-        init(i_artist, i_song, i_year, i_rating, i_isFavorite);
+    Record::Record(const std::string &i_artist, const std::string &i_song, unsigned i_year, double i_rating, bool i_isFavorite){
+        init(++idCounter, i_artist, i_song, i_year, i_rating, i_isFavorite);
+    }
+
+    void Record::init(unsigned i_id, const std::string &i_artist, const std::string &i_song, unsigned i_year, double i_rating, bool i_isFavorite){
+        setId(i_id);
+        setArtist(i_artist);
+        setSong(i_song);
+        setYear(i_year);
+        setRating(i_rating);
+        setIsFavorite(i_isFavorite);
     }
 
     Record::~Record(){
         --idCounter;
+    }
+
+    bool Record::isNameCorrect(const std::string &i_name){
+        if(i_name.length() >= 2)
+            return true;
+        else
+            throw std::invalid_argument(INVALID_NAME_EXCEPTION + i_name);
+    }
+
+    bool Record::isYearCorrect(unsigned i_year){
+        if(i_year >= DEFAULT_YEAR && i_year <= Util::getCurrentYear())
+            return true;
+        else
+            throw std::invalid_argument(INVALID_YEAR_EXCEPTION + std::to_string(i_year));
+    }
+
+    bool Record::isRatingCorrect(double i_rating){
+        if(i_rating >= 0 && i_rating <= 10)
+            return true;
+        else{
+            std::stringstream ss;
+            ss << INVALID_RATING_EXCEPTION << std::fixed << std::setprecision(1) << i_rating;
+            throw std::invalid_argument(ss.str());
+        }
+    }
+
+    void Record::setId(unsigned i_id){
+        id = i_id;
     }
 
     void Record::setArtist(const std::string &i_artist){
@@ -65,10 +105,7 @@ namespace Rec{
     }
 
     bool Record::operator ==(const Record &i_record){
-        if(this->getRating() != i_record.getRating())
-            return false;
-
-        return true;
+        return (this->getRating() == i_record.getRating());
     }
 
     bool Record::operator !=(const Record &i_record){
@@ -84,20 +121,14 @@ namespace Rec{
     }
 
     bool Record::operator >=(const Record &i_record){
-        if(this->getRating() < i_record.getRating())
-            return false;
-
-        return true;
+        return (this->getRating() >= i_record.getRating());
     }
 
     bool Record::operator <=(const Record &i_record){
-        if(this->getRating() > i_record.getRating())
-            return false;
-
-        return true;
+        return (this->getRating() <= i_record.getRating());
     }
 
-    Record Record::operator ++(){
+    Record& Record::operator ++(){
         float temp_rating = this->getRating();
         this->setRating(++temp_rating);
         return *this;
@@ -110,7 +141,7 @@ namespace Rec{
         return temp;
     }
 
-    Record Record::operator --(){
+    Record& Record::operator --(){
         float temp_rating = this->getRating();
         this->setRating(--temp_rating);
         return *this;
@@ -124,14 +155,15 @@ namespace Rec{
     }
 
     std::istream& operator >>(std::istream &i, Record &i_record){
+        unsigned temp_id;
         std::string temp_artist;
         std::string temp_song;
         unsigned temp_year;
         double temp_rating;
         bool temp_isFavorite;
 
-        i >> temp_artist >> temp_song >> temp_year >> temp_rating >> temp_isFavorite;
-        i_record.init(temp_artist, temp_song, temp_year, temp_rating, temp_isFavorite);
+        i >> temp_id >> temp_artist >> temp_song >> temp_year >> temp_rating >> temp_isFavorite;
+        i_record.init(temp_id, temp_artist, temp_song, temp_year, temp_rating, temp_isFavorite);
 
         return i;
     }
@@ -151,37 +183,5 @@ namespace Rec{
         ss << getIsFavorite();
 
         return ss.str();
-    }
-
-    void Record::init(const std::string &i_artist, const std::string &i_song, unsigned i_year, double i_rating, bool i_isFavorite){
-        setArtist(i_artist);
-        setSong(i_song);
-        setYear(i_year);
-        setRating(i_rating);
-        setIsFavorite(i_isFavorite);
-    }
-
-    bool Record::isNameCorrect(const std::string &i_name){
-        if(i_name.length() >= 2)
-            return true;
-        else
-            throw std::invalid_argument(INVALID_NAME_EXCEPTION + i_name);
-    }
-
-    bool Record::isYearCorrect(unsigned i_year){
-        if(i_year >= DEFAULT_YEAR && i_year <= Util::getCurrentYear())
-            return true;
-        else
-            throw std::invalid_argument(INVALID_YEAR_EXCEPTION + std::to_string(i_year));
-    }
-
-    bool Record::isRatingCorrect(double i_rating){
-        if(i_rating >= 0 && i_rating <= 10)
-            return true;
-        else{
-            std::stringstream ss;
-            ss << INVALID_RATING_EXCEPTION << std::fixed << std::setprecision(1) << i_rating;
-            throw std::invalid_argument(ss.str());
-        }
     }
 }

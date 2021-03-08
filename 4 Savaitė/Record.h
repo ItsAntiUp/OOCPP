@@ -7,7 +7,7 @@
 namespace Rec{
     class Record{
         private:
-            const unsigned id;
+            unsigned id;
             static unsigned idCounter;
             std::string artist;
             std::string song;
@@ -18,8 +18,20 @@ namespace Rec{
         public:
             Record();
             Record(const std::string&, const std::string&, unsigned, double, bool);
+
+        private:
+            void init(unsigned, const std::string&, const std::string&, unsigned, double, bool);
+
+        public:
             ~Record();
 
+        private:
+            bool isNameCorrect(const std::string&);
+            bool isYearCorrect(unsigned);
+            bool isRatingCorrect(double);
+
+        public:
+            void setId(unsigned);
             void setArtist(const std::string&);
             void setSong(const std::string&);
             void setYear(unsigned);
@@ -40,22 +52,15 @@ namespace Rec{
             bool operator >=(const Record&);
             bool operator <=(const Record&);
 
-            Record operator ++();
+            Record& operator ++();
             Record operator ++(int);
-            Record operator --();
+            Record& operator --();
             Record operator --(int);
 
             friend std::istream& operator >>(std::istream&, Record&);
             friend std::ostream& operator <<(std::ostream&, const Record&);
 
             std::string toString() const;
-
-        private:
-            void init(const std::string&, const std::string&, unsigned, double, bool);
-
-            bool isNameCorrect(const std::string&);
-            bool isYearCorrect(unsigned);
-            bool isRatingCorrect(double);
     };
 }
 
