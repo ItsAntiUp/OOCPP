@@ -13,6 +13,8 @@ namespace Rec{
         public:
             Record();
             Record(const std::string&, const std::string&, unsigned, double, bool);
+            Record(const Record&);
+            Record& operator =(const Record&);
             void init(unsigned, const std::string&, const std::string&, unsigned, double, bool);
             ~Record();
 
@@ -46,8 +48,6 @@ namespace Rec{
             friend std::ostream& operator <<(std::ostream&, const Record&);
 
             std::string toString() const;
-
-            /*friend class Record_inner;*/
     };
 }
 

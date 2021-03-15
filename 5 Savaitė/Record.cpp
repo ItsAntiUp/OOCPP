@@ -23,36 +23,10 @@ namespace Rec{
             bool isYearCorrect(unsigned);
             bool isRatingCorrect(double);
 
-        public:
             friend class Record;
     };
 
     unsigned Record::Inner::idCounter = 0;
-
-    Record::Record(){
-        rec_ptr = NULL;
-        /*rec_ptr = new Record::Record_inner();
-        init(++Record::Record_inner::idCounter, DEFAULT_NAME, DEFAULT_NAME, DEFAULT_YEAR, DEFAULT_RATING, DEFAULT_ISFAVORITE);*/
-    }
-
-    Record::Record(const std::string &i_artist, const std::string &i_song, unsigned i_year, double i_rating, bool i_isFavorite){
-        rec_ptr = new Record::Inner();
-        init(++Record::Inner::idCounter, i_artist, i_song, i_year, i_rating, i_isFavorite);
-    }
-
-    void Record::init(unsigned i_id, const std::string &i_artist, const std::string &i_song, unsigned i_year, double i_rating, bool i_isFavorite){
-        setId(i_id);
-        setArtist(i_artist);
-        setSong(i_song);
-        setYear(i_year);
-        setRating(i_rating);
-        setIsFavorite(i_isFavorite);
-    }
-
-    Record::~Record(){
-        --Record::Inner::idCounter;
-        delete rec_ptr;
-    }
 
     bool Record::Inner::isNameCorrect(const std::string &i_name){
         if(i_name.length() >= 2)
@@ -78,44 +52,104 @@ namespace Rec{
         }
     }
 
+    Record::Record(){
+        rec_ptr = NULL;
+        /*rec_ptr = new Inner();
+        init(++Inner::idCounter, DEFAULT_NAME, DEFAULT_NAME, DEFAULT_YEAR, DEFAULT_RATING, DEFAULT_ISFAVORITE);*/
+    }
+
+    Record::Record(const std::string &i_artist, const std::string &i_song, unsigned i_year, double i_rating, bool i_isFavorite){
+        rec_ptr = new Inner();
+        init(++Inner::idCounter, i_artist, i_song, i_year, i_rating, i_isFavorite);
+    }
+
+    Record::Record(const Record &i_record){
+        Inner *temp = new Inner();
+
+        temp->id = i_record.getId();
+        temp->artist = i_record.getArtist();
+        temp->song = i_record.getSong();
+        temp->year = i_record.getYear();
+        temp->rating = i_record.getRating();
+        temp->isFavorite = i_record.getIsFavorite();
+
+        this->rec_ptr = temp;
+    }
+
+    Record& Record::operator =(const Record &i_record){
+        if(rec_ptr == NULL || i_record.rec_ptr == NULL)
+            throw CustomException(OBJECT_NOT_INITIALIZED_EXCEPTION);
+
+        if(this->rec_ptr == i_record.rec_ptr)
+            return *this;
+
+        Inner *temp = new Inner();
+
+        temp->id = i_record.getId();
+        temp->artist = i_record.getArtist();
+        temp->song = i_record.getSong();
+        temp->year = i_record.getYear();
+        temp->rating = i_record.getRating();
+        temp->isFavorite = i_record.getIsFavorite();
+
+        delete this->rec_ptr;
+        this->rec_ptr = temp;
+
+        return *this;
+    }
+
+    void Record::init(unsigned i_id, const std::string &i_artist, const std::string &i_song, unsigned i_year, double i_rating, bool i_isFavorite){
+        setId(i_id);
+        setArtist(i_artist);
+        setSong(i_song);
+        setYear(i_year);
+        setRating(i_rating);
+        setIsFavorite(i_isFavorite);
+    }
+
+    Record::~Record(){
+        --Inner::idCounter;
+        delete rec_ptr;
+    }
+
     void Record::setId(unsigned i_id){
         if(rec_ptr == NULL)
-            rec_ptr = new Record::Inner();
+            rec_ptr = new Inner();
 
         rec_ptr->id = i_id;
     }
 
     void Record::setArtist(const std::string &i_artist){
         if(rec_ptr == NULL)
-            rec_ptr = new Record::Inner();
+            rec_ptr = new Inner();
 
         rec_ptr->artist = rec_ptr->isNameCorrect(i_artist) ? i_artist : DEFAULT_NAME;
     }
 
     void Record::setSong(const std::string &i_song){
         if(rec_ptr == NULL)
-            rec_ptr = new Record::Inner();
+            rec_ptr = new Inner();
 
         rec_ptr->song = rec_ptr->isNameCorrect(i_song) ? i_song : DEFAULT_NAME;
     }
 
     void Record::setYear(unsigned i_year){
         if(rec_ptr == NULL)
-            rec_ptr = new Record::Inner();
+            rec_ptr = new Inner();
 
         rec_ptr->year = rec_ptr->isYearCorrect(i_year) ? i_year : DEFAULT_YEAR;
     }
 
     void Record::setRating(double i_rating){
         if(rec_ptr == NULL)
-            rec_ptr = new Record::Inner();
+            rec_ptr = new Inner();
 
         rec_ptr->rating = rec_ptr->isRatingCorrect(i_rating) ? i_rating : DEFAULT_RATING;
     }
 
     void Record::setIsFavorite(bool i_isFavorite){
         if(rec_ptr == NULL)
-            rec_ptr = new Record::Inner();
+            rec_ptr = new Inner();
 
         rec_ptr->isFavorite = i_isFavorite;
     }
@@ -163,6 +197,9 @@ namespace Rec{
     }
 
     bool Record::operator ==(const Record &i_record){
+        if(rec_ptr == NULL)
+            throw CustomException(OBJECT_NOT_INITIALIZED_EXCEPTION);
+
         return (this->getRating() == i_record.getRating());
     }
 
@@ -179,42 +216,52 @@ namespace Rec{
     }
 
     bool Record::operator >=(const Record &i_record){
+        if(rec_ptr == NULL)
+            throw CustomException(OBJECT_NOT_INITIALIZED_EXCEPTION);
+
         return (this->getRating() >= i_record.getRating());
     }
 
     bool Record::operator <=(const Record &i_record){
+        if(rec_ptr == NULL)
+            throw CustomException(OBJECT_NOT_INITIALIZED_EXCEPTION);
+
         return (this->getRating() <= i_record.getRating());
     }
 
     Record& Record::operator ++(){
+        if(rec_ptr == NULL)
+            throw CustomException(OBJECT_NOT_INITIALIZED_EXCEPTION);
+
         float temp_rating = this->getRating();
         this->setRating(++temp_rating);
         return *this;
     }
 
     Record Record::operator ++(int){
-        //Avoiding errors, since writing temp = *this causes them both to have the same implementation.
-        /*Record temp = *this;*/
-        Record temp;
-        temp.init(this->getId(), this->getArtist(), this->getSong(), this->getYear(), this->getRating(), this->getIsFavorite());
+        if(rec_ptr == NULL)
+            throw CustomException(OBJECT_NOT_INITIALIZED_EXCEPTION);
 
+        Record temp = *this;
         float temp_rating = this->getRating();
         this->setRating(++temp_rating);
         return temp;
     }
 
     Record& Record::operator --(){
+        if(rec_ptr == NULL)
+            throw CustomException(OBJECT_NOT_INITIALIZED_EXCEPTION);
+
         float temp_rating = this->getRating();
         this->setRating(--temp_rating);
         return *this;
     }
 
     Record Record::operator --(int){
-        //Avoiding errors, since writing temp = *this causes them both to have the same implementation.
-        /*Record temp = *this;*/
-        Record temp;
-        temp.init(this->getId(), this->getArtist(), this->getSong(), this->getYear(), this->getRating(), this->getIsFavorite());
+        if(rec_ptr == NULL)
+            throw CustomException(OBJECT_NOT_INITIALIZED_EXCEPTION);
 
+        Record temp = *this;
         float temp_rating = this->getRating();
         this->setRating(--temp_rating);
         return temp;
