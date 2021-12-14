@@ -1,2 +1,2 @@
 # OOCPP
-These mini projects were done in VU MIF Object Oriented C++ course (2 semester).
+Weekly mini projects, which were created for VU MIF Computer Science course "Object Oriented Programming C++" (2 semester).
